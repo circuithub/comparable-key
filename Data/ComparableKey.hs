@@ -50,6 +50,7 @@ instance (EqByKey a a, EqByKey b b) => EqByKey (Either a b) (Either a b) where
   (Right x) `eqByKey` (Right y) = x `eqByKey` y
 -}
 
+-- TODO: Compare to https://hackage.haskell.org/package/prelude-extras-0.4/docs/Prelude-Extras.html#t:Eq1
 class EqByKey a where
   eqByKey :: a -> a -> Bool
   default eqByKey :: Eq a => a -> a -> Bool
@@ -84,6 +85,7 @@ instance EqByKey Char
 instance EqByKey T.Text
 instance EqByKey TL.Text
 
+-- TODO: Compare to https://hackage.haskell.org/package/prelude-extras-0.4/docs/Prelude-Extras.html#t:Ord1
 class EqByKey a => OrdByKey a where 
   compareByKey :: a -> a -> Ordering
   default compareByKey :: Ord a => a -> a -> Ordering
