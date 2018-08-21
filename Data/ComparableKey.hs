@@ -1,6 +1,6 @@
 {-# LANGUAGE CPP #-}
 {-# LANGUAGE DefaultSignatures #-}
-module Data.ComparableKey 
+module Data.ComparableKey
   ( EqByKey (..)
   , OrdByKey (..)
   , EqKeyed (..)
@@ -86,7 +86,7 @@ instance EqByKey T.Text
 instance EqByKey TL.Text
 
 -- TODO: Compare to https://hackage.haskell.org/package/prelude-extras-0.4/docs/Prelude-Extras.html#t:Ord1
-class EqByKey a => OrdByKey a where 
+class EqByKey a => OrdByKey a where
   compareByKey :: a -> a -> Ordering
   default compareByKey :: Ord a => a -> a -> Ordering
   compareByKey = compare
@@ -123,15 +123,15 @@ instance OrdByKey TL.Text
 
 -- | A default salt used in the implementation of hashByKey (See Data.Hashable.Class)
 defaultSalt :: Int
-#if WORD_SIZE_IN_BITS < 64
-defaultSalt = 0x087fc72c
+#if WORD_SIZE_IN_BITS == 64
+defaultSalt = -2578643520546668380  -- 0xdc36d1615b7400a4
 #else
-defaultSalt = 0xdc36d1615b7400a4
+defaultSalt = 0x087fc72c
 #endif
 {-# INLINE defaultSalt #-}
 
 -- | A version of Hashable that operates only on the keys portion of a data structure
-class HashableByKey a where 
+class HashableByKey a where
   hashByKey :: a -> Int
   hashByKey = hashWithSaltByKey defaultSalt
 
@@ -139,7 +139,7 @@ class HashableByKey a where
   default hashWithSaltByKey :: Hashable a => Int -> a -> Int
   hashWithSaltByKey = hashWithSalt
 
-newtype  HashableByKey a => HashKeyed a = HashKeyed a 
+newtype  HashableByKey a => HashKeyed a = HashKeyed a
 instance HashableByKey a => Hashable (HashKeyed a) where
   hashWithSalt salt (HashKeyed x) = hashWithSaltByKey salt x
 instance HashableByKey a => HashableByKey (a, b) where
